@@ -1,0 +1,51 @@
+{
+    "name": "mediaboutique/laravel-multisite",
+    "description": "Run multiple sites on a single Laravel installation",
+    "keywords": [
+        "media boutique",
+        "laravel",
+        "multisite",
+        "laravel-multisite"
+    ],
+    "homepage": "https://github.com/mediaboutique/laravel-multisite",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arne Hendriksen",
+            "email": "arne@mediaboutique.nl",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^8.0 || ^9.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "MediaBoutique\\Multisite\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    },
+    "scripts": {
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MediaBoutique\\Multisite\\MultisiteServiceProvider"
+            ],
+            "aliases": {
+                "Multisite": "MediaBoutique\\Multisite\\Facades\\Multisite"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

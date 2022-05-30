@@ -1,0 +1,10 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('site:{{slug}}')
+    ->name('{{slug}}::')
+    ->group(function () {
+
+        // Site specific routes go here.
+    });
