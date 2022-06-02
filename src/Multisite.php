@@ -2,6 +2,8 @@
 
 namespace MediaBoutique\Multisite;
 
+use MediaBoutique\Multisite\Contracts\Multisite as MultisiteContract;
+
 use Exception;
 
 class Multisite
@@ -17,14 +19,27 @@ class Multisite
         $this->host = $host;
 
         $model = config('multisite.model');
+
+        if (!$model || !class_exists($model)) {
+            throw new Exception("Model {$model} not found!");
+        }
+
+        if (!in_array(MultisiteContract::class, class_implements($model))) {
+            throw new Exception("Model {$model} doesn\'t implement Multisite contract!");
+        }
+
         $this->site = $model::host($host)->first();
 
         if (!$this->site) {
-            throw new Exception('Site not found!');
+            throw new Exception("Site not found!");
         }
 
         $site = $this->site->toArray();
-        $this->alias = (!empty($site[config('multisite.alias')]) ? $site[config('multisite.alias')] : null);
+        $this->alias = $site[config('multisite.alias')] ?? null;
+
+        if (!$this->alias) {
+            throw new Exception("No alias set!");
+        }
     }
 
     public function alias(): ?string
@@ -40,13 +55,13 @@ class Multisite
     public function __call($name, $arguments)
     {
         if (!in_array($name, ['view', 'asset', 'route'])) {
-            throw new Exception('Undefined method!');
+            throw new Exception("Undefined method!");
         }
         if (!$this->site) {
-            throw new Exception('Site not found!');
+            throw new Exception("Site not found!");
         }
         if (!$this->alias) {
-            throw new Exception('No alias set!');
+            throw new Exception("No alias set!");
         }
 
         if ($name === 'view') {
