@@ -3,7 +3,6 @@
 namespace MediaBoutique\Multisite;
 
 use Exception;
-use Illuminate\Support\Facades\DB;
 
 class Multisite
 {

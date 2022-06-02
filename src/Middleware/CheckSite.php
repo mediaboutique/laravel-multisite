@@ -12,8 +12,7 @@ class CheckSite
     public function handle(Request $request, Closure $next, string $alias)
     {
         if (Multisite::alias() !== $alias) {
-            dd(Multisite::alias() . ' is niet ' . $alias);
-            // return redirect(RouteServiceProvider::HOME);
+            abort(403);
         }
 
         return $next($request);
