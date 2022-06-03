@@ -2,7 +2,7 @@
 
 namespace MediaBoutique\Multisite;
 
-use MediaBoutique\Multisite\Contracts\Multisite as MultisiteContract;
+use MediaBoutique\Multisite\Contracts\MultisiteModel;
 
 use Exception;
 
@@ -24,7 +24,7 @@ class Multisite
             throw new Exception("Model {$model} not found!");
         }
 
-        if (!in_array(MultisiteContract::class, class_implements($model))) {
+        if (!in_array(MultisiteModel::class, class_implements($model))) {
             throw new Exception("Model {$model} doesn\'t implement Multisite contract!");
         }
 
