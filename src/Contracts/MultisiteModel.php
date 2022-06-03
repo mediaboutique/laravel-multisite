@@ -4,7 +4,7 @@ namespace MediaBoutique\Multisite\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 
-interface Multisite
+interface MultisiteModel
 {
     public function scopeHost(Builder $query, string $host): Builder;
 }
