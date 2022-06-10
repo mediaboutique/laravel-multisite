@@ -31,11 +31,16 @@ class MultisiteServiceProvider extends ServiceProvider
     {
         if (!app()->runningInConsole()) {
 
-            Multisite::init(request()->getHost());
+            $host = request()->getHost();
 
-            View::addLocation(resource_path('sites/' . Multisite::alias() . '/views'));
+            if (!in_array($host, config('multisite.exclude_hosts', []))) {
 
-            View::addNamespace(Multisite::alias(), resource_path('sites/' . Multisite::alias() . '/views'));
+                Multisite::init($host);
+
+                View::addLocation(resource_path('sites/' . Multisite::alias() . '/views'));
+
+                View::addNamespace(Multisite::alias(), resource_path('sites/' . Multisite::alias() . '/views'));
+            }
         } else {
 
             $this->publishes([

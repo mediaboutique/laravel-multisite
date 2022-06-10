@@ -6,4 +6,5 @@ return [
 
     'alias' => null, // Example: 'slug'
 
+    'exclude_hosts' => [],
 ];
