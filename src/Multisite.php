@@ -52,6 +52,11 @@ class Multisite
         return $this->site;
     }
 
+    public function active(): bool
+    {
+        return (!empty($this->site) && !empty($this->alias));
+    }
+
     public function __call($name, $arguments)
     {
         if (!in_array($name, ['view', 'asset', 'route'])) {
