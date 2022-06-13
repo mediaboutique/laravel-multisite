@@ -59,14 +59,12 @@ class Multisite
 
     public function __call($name, $arguments)
     {
+        if (!$this->active()) {
+            throw new Exception("No site active!");
+        }
+
         if (!in_array($name, ['view', 'asset', 'route'])) {
             throw new Exception("Undefined method!");
-        }
-        if (!$this->site) {
-            throw new Exception("Site not found!");
-        }
-        if (!$this->alias) {
-            throw new Exception("No alias set!");
         }
 
         if ($name === 'view') {
