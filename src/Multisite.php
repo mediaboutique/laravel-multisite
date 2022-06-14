@@ -2,8 +2,9 @@
 
 namespace MediaBoutique\Multisite;
 
+use Illuminate\Support\Facades\Cache;
 use MediaBoutique\Multisite\Contracts\MultisiteModel;
-
+use Illuminate\Support\Str;
 use Exception;
 
 class Multisite
@@ -28,7 +29,13 @@ class Multisite
             throw new Exception("Model {$model} doesn\'t implement Multisite contract!");
         }
 
-        $this->site = $model::host($host)->first();
+        if (config('multisite.cache.enabled')) {
+            $this->site = Cache::remember("multisite_host:" . Str::slug($host) . "_site", (60 * 60), function () use ($model, $host) {
+                return $model::host($host)->first();
+            });
+        } else {
+            $this->site = $model::host($host)->first();
+        }
 
         if (!$this->site) {
             throw new Exception("Site not found!");
@@ -59,12 +66,14 @@ class Multisite
 
     public function __call($name, $arguments)
     {
-        if (!$this->active()) {
-            throw new Exception("No site active!");
-        }
-
         if (!in_array($name, ['view', 'asset', 'route'])) {
             throw new Exception("Undefined method!");
+        }
+        if (!$this->site) {
+            throw new Exception("Site not found!");
+        }
+        if (!$this->alias) {
+            throw new Exception("No alias set!");
         }
 
         if ($name === 'view') {
