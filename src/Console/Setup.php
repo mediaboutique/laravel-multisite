@@ -27,7 +27,7 @@ class Setup extends Command
         ];
 
         foreach ($directories as $directory) {
-            if (!file_exists($directory) && !is_link($directory)) {
+            if (!file_exists($directory)) {
                 File::makeDirectory($directory, 0755, true);
             }
         }

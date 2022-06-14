@@ -45,7 +45,7 @@ class Site extends Command
         ];
 
         foreach ($directories as $directory) {
-            if (!file_exists($directory) && !is_link($directory)) {
+            if (!file_exists($directory)) {
                 $found = false;
                 File::makeDirectory($directory, 0755, true);
             }
@@ -95,7 +95,7 @@ class Site extends Command
         ];
 
         foreach ($directories as $directory) {
-            if (file_exists($directory) || is_link($directory)) {
+            if (file_exists($directory)) {
                 $found = true;
                 File::deleteDirectory($directory);
             }
