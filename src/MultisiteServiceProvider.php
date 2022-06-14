@@ -36,9 +36,14 @@ class MultisiteServiceProvider extends ServiceProvider
 
                 Multisite::init($host);
 
-                View::addLocation(resource_path('sites/' . Multisite::alias() . '/views'));
+                if (Multisite::active()) {
 
-                View::addNamespace(Multisite::alias(), resource_path('sites/' . Multisite::alias() . '/views'));
+                    $path_views = resource_path('sites/' . Multisite::alias() . '/views');
+
+                    View::addLocation($path_views);
+
+                    View::addNamespace(Multisite::alias(), $path_views);
+                }
             }
         } else {
 

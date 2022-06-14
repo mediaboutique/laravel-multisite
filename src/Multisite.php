@@ -13,13 +13,13 @@ class Multisite
 
     protected ?string $alias = null;
 
-    protected $site = null;
+    protected ?MultisiteModel $site = null;
 
-    public function init(string $host)
+    public function __construct()
     {
-        $this->host = $host;
-
         $model = config('multisite.model');
+
+        $alias = config('multisite.alias');
 
         if (!$model || !class_exists($model)) {
             throw new Exception("Model {$model} not found!");
@@ -29,34 +29,42 @@ class Multisite
             throw new Exception("Model {$model} doesn\'t implement Multisite contract!");
         }
 
+        if (!$alias) {
+            throw new Exception("No alias provided!");
+        }
+    }
+
+    public function init(string $host): self
+    {
+        $this->host = $host;
+
+        $model = config('multisite.model');
+
+        $alias = config('multisite.alias');
+
         if (config('multisite.cache.enabled')) {
-            $this->site = Cache::remember("multisite_host:" . Str::slug($host) . "_site", (60 * 60), function () use ($model, $host) {
+            $site = Cache::remember("multisite_host:" . Str::slug($host) . "_site", (60 * 60), function () use ($model, $host) {
                 return $model::host($host)->first();
             });
         } else {
-            $this->site = $model::host($host)->first();
+            $site = $model::host($host)->first();
+        }
+        if ($site) {
+            $this->site = $site;
+            $this->alias = $site->{$alias};
         }
 
-        if (!$this->site) {
-            throw new Exception("Site not found!");
-        }
+        return $this;
+    }
 
-        $site = $this->site->toArray();
-        $this->alias = $site[config('multisite.alias')] ?? null;
-
-        if (!$this->alias) {
-            throw new Exception("No alias set!");
-        }
+    public function site(): ?MultisiteModel
+    {
+        return $this->site;
     }
 
     public function alias(): ?string
     {
         return $this->alias;
-    }
-
-    public function model()
-    {
-        return $this->site;
     }
 
     public function active(): bool
@@ -68,12 +76,6 @@ class Multisite
     {
         if (!in_array($name, ['view', 'asset', 'route'])) {
             throw new Exception("Undefined method!");
-        }
-        if (!$this->site) {
-            throw new Exception("Site not found!");
-        }
-        if (!$this->alias) {
-            throw new Exception("No alias set!");
         }
 
         if ($name === 'view') {
