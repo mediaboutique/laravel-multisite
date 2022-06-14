@@ -36,7 +36,7 @@ return [
 
     'cache' => [
 
-        'enabled' => env('MULTISITE_CACHE_ENABLED'),
+        'enabled' => env('MULTISITE_CACHE_ENABLED', false),
 
     ],
 
