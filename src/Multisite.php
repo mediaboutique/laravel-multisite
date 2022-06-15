@@ -75,7 +75,7 @@ class Multisite
     public function __call($name, $arguments)
     {
         if (!in_array($name, ['view', 'asset', 'route'])) {
-            throw new Exception("Undefined method!");
+            throw new Exception("Undefined method: {$name}");
         }
 
         if ($name === 'view') {
