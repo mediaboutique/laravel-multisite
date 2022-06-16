@@ -74,7 +74,7 @@ class Multisite
 
     public function __call($name, $arguments)
     {
-        if (!in_array($name, ['view', 'asset', 'route'])) {
+        if (!in_array($name, ['view', 'asset', 'mix', 'route'])) {
             throw new Exception("Undefined method: {$name}");
         }
 
@@ -82,7 +82,7 @@ class Multisite
             return view($this->alias . '::' . array_shift($arguments), ...$arguments);
         } elseif ($name === 'route') {
             return route($this->alias . '::' . array_shift($arguments), ...$arguments);
-        } elseif ($name === 'asset') {
+        } elseif (in_array($name, ['asset', 'mix'])) {
             return asset('sites/' . $this->alias . '/' . array_shift($arguments), ...$arguments);
         }
     }
