@@ -83,7 +83,7 @@ class Multisite
         } elseif ($name === 'route') {
             return route($this->alias . '::' . array_shift($arguments), ...$arguments);
         } elseif (in_array($name, ['asset', 'mix'])) {
-            return asset('sites/' . $this->alias . '/' . array_shift($arguments), ...$arguments);
+            return asset('assets/sites/' . $this->alias . '/' . array_shift($arguments), ...$arguments);
         }
     }
 }

@@ -21,7 +21,8 @@ class Setup extends Command
 
         $directories = [
             resource_path("sites"),
-            public_path("sites"),
+            public_path("assets"),
+            public_path("assets/sites"),
             storage_path("app/sites"),
             base_path("routes/sites"),
         ];
