@@ -28,33 +28,29 @@ class MultisiteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!app()->runningInConsole()) {
+        $this->publishes([
+            __DIR__ . '/../config/multisite.php' => config_path('multisite.php'),
+        ], 'config');
 
-            $host = request()->getHost();
+        $this->commands([
+            \MediaBoutique\Multisite\Console\Setup::class,
+            \MediaBoutique\Multisite\Console\Site::class,
+        ]);
 
-            if (!in_array($host, config('multisite.exclude_hosts', []))) {
+        $host = request()->getHost();
 
-                Multisite::init($host);
+        if (!in_array($host, config('multisite.exclude_hosts', []))) {
 
-                if (Multisite::active()) {
+            Multisite::init($host);
 
-                    $path_views = resource_path('sites/' . Multisite::alias() . '/views');
+            if (Multisite::active()) {
 
-                    View::addLocation($path_views);
+                $path_views = resource_path('sites/' . Multisite::alias() . '/views');
 
-                    View::addNamespace(Multisite::alias(), $path_views);
-                }
+                View::addLocation($path_views);
+
+                View::addNamespace(Multisite::alias(), $path_views);
             }
-        } else {
-
-            $this->publishes([
-                __DIR__ . '/../config/multisite.php' => config_path('multisite.php'),
-            ], 'config');
-
-            $this->commands([
-                \MediaBoutique\Multisite\Console\Setup::class,
-                \MediaBoutique\Multisite\Console\Site::class,
-            ]);
         }
     }
 }
