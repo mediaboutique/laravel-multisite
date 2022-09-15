@@ -1,3 +1,6 @@
+Version 0.3.0:
+- Removed runningInConsole check to allow unit testing
+
 Version 0.2.9:
 - wip
 
