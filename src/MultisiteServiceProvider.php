@@ -37,7 +37,7 @@ class MultisiteServiceProvider extends ServiceProvider
             \MediaBoutique\Multisite\Console\Site::class,
         ]);
 
-        if (config('multisite')) {
+        if (Multisite::installed()) {
 
             $host = request()->getHost();
 

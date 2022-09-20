@@ -2,10 +2,11 @@
 
 namespace MediaBoutique\Multisite;
 
-use Illuminate\Support\Facades\Cache;
-use MediaBoutique\Multisite\Contracts\MultisiteModel;
-use Illuminate\Support\Str;
 use Exception;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+use MediaBoutique\Multisite\Contracts\MultisiteModel;
 
 class Multisite
 {
@@ -14,25 +15,6 @@ class Multisite
     protected ?string $alias = null;
 
     protected ?MultisiteModel $site = null;
-
-    public function __construct()
-    {
-        $model = config('multisite.model');
-
-        $alias = config('multisite.alias');
-
-        if (!$model || !class_exists($model)) {
-            throw new Exception("Model {$model} not found!");
-        }
-
-        if (!in_array(MultisiteModel::class, class_implements($model))) {
-            throw new Exception("Model {$model} doesn\'t implement Multisite contract!");
-        }
-
-        if (!$alias) {
-            throw new Exception("No alias provided!");
-        }
-    }
 
     public function init(string $host): self
     {
@@ -67,6 +49,35 @@ class Multisite
         return $this->alias;
     }
 
+    public function installed(): bool
+    {
+        if (!config('multisite')) {
+            return false;
+        }
+
+        $model = config('multisite.model');
+
+        $alias = config('multisite.alias');
+
+        if (!$model || !class_exists($model)) {
+            return false;
+        }
+
+        if (!in_array(MultisiteModel::class, class_implements($model))) {
+            return false;
+        }
+
+        if (!Schema::hasTable((new $model())->getTable())) {
+            return false;
+        }
+
+        if (!$alias) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function active(): bool
     {
         return (!empty($this->site) && !empty($this->alias));
@@ -84,6 +95,29 @@ class Multisite
             return route($this->alias . '::' . array_shift($arguments), ...$arguments);
         } elseif (in_array($name, ['asset', 'mix'])) {
             return asset('assets/sites/' . $this->alias . '/' . array_shift($arguments), ...$arguments);
+        }
+    }
+
+    protected function check()
+    {
+        $model = config('multisite.model');
+
+        $alias = config('multisite.alias');
+
+        if (!$model || !class_exists($model)) {
+            throw new Exception("Model {$model} not found!");
+        }
+
+        if (!in_array(MultisiteModel::class, class_implements($model))) {
+            throw new Exception("Model {$model} doesn\'t implement Multisite contract!");
+        }
+
+        if (!Schema::hasTable((new $model())->getTable())) {
+            throw new Exception("Table " . (new $model())->getTable() . " not found!");
+        }
+
+        if (!$alias) {
+            throw new Exception("No alias provided!");
         }
     }
 }
