@@ -1,3 +1,6 @@
+Version 0.3.1:
+- Check for config before boostrapping multisite
+
 Version 0.3.0:
 - Removed runningInConsole check to allow unit testing
 
