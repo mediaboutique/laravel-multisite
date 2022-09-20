@@ -18,6 +18,8 @@ class Multisite
 
     public function init(string $host): self
     {
+        $this->check();
+
         $this->host = $host;
 
         $model = config('multisite.model');
